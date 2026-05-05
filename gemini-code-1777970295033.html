@@ -5,12 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>銷售管理</title>
     <style>
-        body {
-            /* 啟動肌膚自我修復力.jpg */
-            background: #f4f7f6; 
-            font-family: "Microsoft JhengHei", sans-serif;
-            margin: 0;
-        }
+       body {
+    /* 修正後的背景圖片指令 */
+    background-image: url('./啟動肌膚自我修復力.jpg'); 
+    background-size: cover;          /* 讓圖片鋪滿整個螢幕 */
+    background-position: center;     /* 圖片居中 */
+    background-attachment: fixed;    /* 捲動時背景固定不跑掉 */
+    background-repeat: no-repeat;    /* 圖片不重複 */
+    
+    font-family: "Microsoft JhengHei", sans-serif;
+    margin: 0;
+          
+}
+         .tab-content {
+    background: rgba(255, 255, 255, 0.9); /* 讓表單帶有一點透明感，透出底圖 */
+    display: none;                        /* 預設隱藏 */
+    padding: 30px; 
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.active { 
+    display: block;                       /* 被選中時顯示 */
+}
         nav { background: #2c3e50; padding: 15px; text-align: center; color: white; }
         nav a { color: white; margin: 0 15px; text-decoration: none; cursor: pointer; font-weight: bold; }
         .container { padding: 20px; max-width: 900px; margin: auto; }
