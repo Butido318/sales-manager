@@ -89,8 +89,14 @@
     </div>
 
     <!-- 庫存與分析標籤先預留位置 -->
-    <div id="inventory" class="tab-content"><h2>📊 庫存狀況</h2><p>請至 Google Sheet 查看自動計算結果</p></div>
-    <div id="analysis" class="tab-content"><h2>📈 盈餘分析</h2><p>分析報表規劃中</p></div>
+    <div id="inventory" class="tab-content">
+    <h2>📊 庫存狀況</h2>
+    <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; text-align: center;">
+        <p>即時庫存已與 Google Sheets 同步更新</p>
+        <button onclick="window.open('https://docs.google.com/spreadsheets/d/1ClDYOc1iyGYW9XbwQp4Z5XZYB3ecSC7_ab3O3WtLhI4/edit?gid=1250971671#gid=1250971671', '_blank')" style="background: #2980b9; width: auto; display: inline-block;">
+            查看詳細庫存與效期清單
+        </button>
+    </div>
 </div>
 
 <script>
