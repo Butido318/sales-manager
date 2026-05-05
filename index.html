@@ -45,7 +45,7 @@
     <a onclick="showTab('purchase')">進貨單</a>
     <a onclick="showTab('sales')">銷貨單</a>
     <a onclick="showTab('inventory')">庫存表</a>
-    <a onclick="showTab('analysis')">盈餘分析表</a>
+    <a onclick="showTab('analysis')">盈餘分析</a>
 </nav>
 
 <div class="container">
@@ -65,7 +65,7 @@
             <input type="number" name="quantity" placeholder="數量" required>
             <input type="number" name="price" placeholder="單價" required>
             <label>商品效期</label><input type="date" name="expiry" required>
-            <button type="submit">送出至後台 Excel</button>
+            <button type="submit">確認送出</button>
         </form>
     </div>
 
@@ -84,7 +84,7 @@
 </select>
             <input type="number" name="quantity" placeholder="數量" required>
             <input type="number" name="price" placeholder="單價" required>
-            <button type="submit">確認銷售並扣除庫存</button>
+            <button type="submit">確認銷售與扣除庫存</button>
         </form>
     </div>
 
@@ -92,9 +92,9 @@
     <div id="inventory" class="tab-content">
     <h2>📊 庫存狀況</h2>
     <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; text-align: center;">
-        <p>即時庫存已與 Google Sheets 同步更新</p>
+        <p>即時庫存已更新至後台</p>
         <button onclick="window.open('https://docs.google.com/spreadsheets/d/1ClDYOc1iyGYW9XbwQp4Z5XZYB3ecSC7_ab3O3WtLhI4/edit?gid=1250971671#gid=1250971671', '_blank')" style="background: #2980b9; width: auto; display: inline-block;">
-            查看詳細庫存與效期清單
+            查看庫存與效期清單
         </button>
     </div>
 </div>
