@@ -2,89 +2,108 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>銷售管理系統</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>銷售管理</title>
     <style>
         body {
-            /* 這裡可以更換你的底圖 */
-            background: url('your-background-image.jpg') no-repeat center center fixed;
-            background-size: cover;
-            font-family: Arial, sans-serif;
+            /* 啟動肌膚自我修復力.jpg */
+            background: #f4f7f6; 
+            font-family: "Microsoft JhengHei", sans-serif;
             margin: 0;
         }
-        .overlay { background: rgba(255, 255, 255, 0.9); min-height: 100vh; }
-        nav { background: #333; padding: 1rem; text-align: center; }
-        nav a { color: white; margin: 0 15px; text-decoration: none; cursor: pointer; }
-        .container { padding: 20px; max-width: 800px; margin: auto; }
-        .tab-content { display: none; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        nav { background: #2c3e50; padding: 15px; text-align: center; color: white; }
+        nav a { color: white; margin: 0 15px; text-decoration: none; cursor: pointer; font-weight: bold; }
+        .container { padding: 20px; max-width: 900px; margin: auto; }
+        .tab-content { display: none; background: white; padding: 30px; border-radius: 12px; shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .active { display: block; }
-        input, select { display: block; width: 100%; margin: 10px 0; padding: 8px; }
-        button { background: #28a745; color: white; border: none; padding: 10px 20px; cursor: pointer; }
+        input, select { display: block; width: 100%; margin: 10px 0; padding: 12px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { background: #27ae60; color: white; border: none; padding: 12px 25px; cursor: pointer; width: 100%; font-size: 16px; border-radius: 4px; }
+        h2 { color: #2c3e50; border-bottom: 2px solid #27ae60; padding-bottom: 10px; }
     </style>
 </head>
 <body>
-<div class="overlay">
-    <nav>
-        <strong style="color: #fff; float: left; margin-left: 20px;">銷售管理</strong>
-        <a onclick="showTab('purchase')">進貨單</a>
-        <a onclick="showTab('sales')">銷貨單</a>
-        <a onclick="showTab('inventory')">庫存表</a>
-        <a onclick="showTab('analysis')">盈餘分析表</a>
-    </nav>
 
-    <div class="container">
-        <!-- 進貨單 -->
-        <div id="purchase" class="tab-content active">
-            <h2>進貨單填寫</h2>
-            <form id="purchaseForm">
-                <input type="date" name="date" required>
-                <select name="category">
-                    <option value="保養品">保養品</option>
-                    <option value="保健食品">保健食品</option>
-                </select>
-                <input type="text" name="itemName" placeholder="商品名稱" required>
-                <input type="number" name="quantity" placeholder="數量" required>
-                <input type="number" name="price" placeholder="單價" required>
-                <input type="date" name="expiry" placeholder="商品效期" required>
-                <button type="submit">送出至後台</button>
-            </form>
-        </div>
+<nav>
+    <div style="font-size: 20px; margin-bottom: 10px;">銷售管理</div>
+    <a onclick="showTab('purchase')">進貨單</a>
+    <a onclick="showTab('sales')">銷貨單</a>
+    <a onclick="showTab('inventory')">庫存表</a>
+    <a onclick="showTab('analysis')">盈餘分析表</a>
+</nav>
 
-        <!-- 其他標籤內容依此類推 -->
+<div class="container">
+    <!-- 進貨單頁面 -->
+    <div id="purchase" class="tab-content active">
+        <h2>📦 進貨單填寫</h2>
+        <form id="purchaseForm">
+            <label>日期</label><input type="date" name="date" required>
+            <label>類別</label>
+            <select name="category">
+                <option value="保養品">保養品</option>
+                <option value="保健食品">保健食品</option>
+            </select>
+            <input type="text" name="itemName" placeholder="商品名稱" required>
+            <input type="number" name="quantity" placeholder="數量" required>
+            <input type="number" name="price" placeholder="單價" required>
+            <label>商品效期</label><input type="date" name="expiry" required>
+            <button type="submit">送出至後台 Excel</button>
+        </form>
     </div>
+
+    <!-- 銷貨單頁面 -->
+    <div id="sales" class="tab-content">
+        <h2>💰 銷貨單填寫</h2>
+        <form id="salesForm">
+            <label>日期</label><input type="date" name="date" required>
+            <label>類別</label>
+            <select name="category">
+                <option value="保養品">保養品</option>
+                <option value="保健食品">保健食品</option>
+            </select>
+            <input type="text" name="itemName" placeholder="商品名稱" required>
+            <input type="number" name="quantity" placeholder="數量" required>
+            <input type="number" name="price" placeholder="單價" required>
+            <button type="submit">確認銷售並扣除庫存</button>
+        </form>
+    </div>
+
+    <!-- 庫存與分析標籤先預留位置 -->
+    <div id="inventory" class="tab-content"><h2>📊 庫存狀況</h2><p>請至 Google Sheet 查看自動計算結果</p></div>
+    <div id="analysis" class="tab-content"><h2>📈 盈餘分析</h2><p>分析報表規劃中</p></div>
 </div>
 
 <script>
-   const API_URL = "https://script.google.com/macros/s/AKfycbwBVmsNYbsogT6pXLWoDDGDVjkYrulr3U_rMTPZBjvaBkZ0IIEtuJxCa99wzoxMpeVk/exec";
+    function showTab(id) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
 
-function showTab(id) {
-    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-}
+    // 這裡請貼上您之前在 Google Apps Script 取得的 API 網址
+    const API_URL = "https://script.google.com/macros/s/AKfycbwBVmsNYbsogT6pXLWoDDGDVjkYrulr3U_rMTPZBjvaBkZ0IIEtuJxCa99wzoxMpeVk/exec"; 
 
-// 處理進貨單送出
-document.getElementById('purchaseForm').onsubmit = function(e) {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const payload = {
-        target: "進貨單",
-        data: Object.fromEntries(formData)
+    document.getElementById('purchaseForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(e.target));
+        sendData("進貨單", data);
     };
-    sendToBackend(payload);
-};
 
-// 通用的傳送函式
-function sendToBackend(payload) {
-    fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify(payload)
-    })
-    .then(res => res.text())
-    .then(text => {
-        alert(text);
-        location.reload(); // 成功後重新整理
-    })
-    .catch(err => alert("錯誤: " + err));
-}
+    document.getElementById('salesForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(e.target));
+        data.totalPrice = data.quantity * data.price; // 自動計算總額
+        sendData("銷貨單", data);
+    };
+
+    function sendData(target, data) {
+        fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify({ target, data })
+        })
+        .then(res => res.text())
+        .then(msg => alert(msg))
+        .catch(err => alert("失敗：" + err));
+    }
 </script>
+
 </body>
 </html>
