@@ -54,17 +54,37 @@
 </div>
 
 <script>
-    function showTab(id) {
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-    }
+   const API_URL = "https://script.google.com/macros/s/AKfycbwBVmsNYbsogT6pXLWoDDGDVjkYrulr3U_rMTPZBjvaBkZ0IIEtuJxCa99wzoxMpeVk/exec";
 
-    // 這裡會寫 Fetch API 來串接 Google Apps Script
-    document.getElementById('purchaseForm').onsubmit = function(e) {
-        e.preventDefault();
-        alert('資料準備拋轉至 Google Sheets / Excel 後台！');
-        // 串接邏輯...
+function showTab(id) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+// 處理進貨單送出
+document.getElementById('purchaseForm').onsubmit = function(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const payload = {
+        target: "進貨單",
+        data: Object.fromEntries(formData)
     };
+    sendToBackend(payload);
+};
+
+// 通用的傳送函式
+function sendToBackend(payload) {
+    fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.text())
+    .then(text => {
+        alert(text);
+        location.reload(); // 成功後重新整理
+    })
+    .catch(err => alert("錯誤: " + err));
+}
 </script>
 </body>
 </html>
