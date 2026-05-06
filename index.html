@@ -17,12 +17,19 @@
     margin: 0;
           
 }
-         .tab-content {
-    background: rgba(255, 255, 255, 0.9); /* 讓表單帶有一點透明感，透出底圖 */
-    display: none;                        /* 預設隱藏 */
+        .tab-content {
+    display: none; /* 初始狀態隱藏 */
+    background: rgba(255, 255, 255, 0.95); /* 稍微調高不透明度，確保閱讀清晰 */
     padding: 30px; 
     border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    margin-top: 50px; /* 讓表單往下移一點，不要擋住中間視覺 */
+    animation: fadeIn 0.5s; /* 加入淡入動畫 */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .active { 
@@ -42,6 +49,10 @@
 
 <nav>
     <div style="font-size: 20px; margin-bottom: 10px;">銷售管理</div>
+    <div onclick="location.reload()" style="font-size: 20px; cursor: pointer; margin-bottom: 10px;">
+        ✨ 銷售管理 (回首頁)
+    </div>
+    <!-- ...其餘選單... -->
     <a onclick="showTab('purchase')">進貨單</a>
     <a onclick="showTab('sales')">銷貨單</a>
     <a onclick="showTab('inventory')">庫存表</a>
@@ -50,7 +61,7 @@
 
 <div class="container">
     <!-- 進貨單頁面 -->
-    <div id="purchase" class="tab-content active">
+    <div id="purchase" class="tab-content">
         <h2>📦 進貨單填寫</h2>
         <form id="purchaseForm">
             <label>資料日期</label><input type="date" name="date" required>
@@ -101,9 +112,19 @@
 
 <script>
     function showTab(id) {
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
+    // 隱藏所有表單
+    document.querySelectorAll('.tab-content').forEach(el => {
+        el.classList.remove('active');
+    });
+
+    // 顯示被點選的那一個
+    const target = document.getElementById(id);
+    if (target) {
+        target.classList.add('active');
+        // 自動捲動到表單位置，方便手機操作
+        target.scrollIntoView({ behavior: 'smooth' });
     }
+}
 
     // 這裡請貼上您之前在 Google Apps Script 取得的 API 網址
     const API_URL = "https://script.google.com/macros/s/AKfycbwBVmsNYbsogT6pXLWoDDGDVjkYrulr3U_rMTPZBjvaBkZ0IIEtuJxCa99wzoxMpeVk/exec"; 
