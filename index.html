@@ -130,22 +130,44 @@
         .then(msg => alert(msg))
         .catch(err => alert("失敗：" + err));
     }
-    // 網頁開啟時自動執行
-    window.onload = function() {
-        fetch(API_URL) // GAS 的 doGet 會回傳商品清單
-        .then(res => res.json())
-        .then(list => {
-            const selects = document.querySelectorAll('select[name="itemName"]');
-            selects.forEach(select => {
-                list.forEach(item => {
-                    let opt = document.createElement('option');
-                    opt.value = item;
-                    opt.innerHTML = item;
-                    select.appendChild(opt);
-                });
+  let productMasterData = {}; // 用來存放從 Excel 抓下來的全部分類資料
+
+window.onload = function() {
+    fetch(API_URL)
+    .then(res => res.json())
+    .then(data => {
+        productMasterData = data; // 存入變數
+        // 初始化：為網頁中所有的類別選單加入監聽功能
+        setupDependentDropdowns();
+    });
+};
+
+function setupDependentDropdowns() {
+    // 找出所有的類別選單 (進貨與銷貨各有一個)
+    const categorySelects = document.querySelectorAll('select[name="category"]');
+    
+    categorySelects.forEach(catSelect => {
+        // 找到同一組表單中的商品選單
+        const itemSelect = catSelect.closest('form').querySelector('select[name="itemName"]');
+        
+        // 當類別選單改變時執行
+        catSelect.addEventListener('change', function() {
+            const selectedCategory = this.value;
+            const items = productMasterData[selectedCategory] || [];
+            
+            // 清空舊選項，只保留預設值
+            itemSelect.innerHTML = '<option value="">-- 請選擇商品 --</option>';
+            
+            // 填入對應類別的商品
+            items.forEach(item => {
+                let opt = document.createElement('option');
+                opt.value = item;
+                opt.innerHTML = item;
+                itemSelect.appendChild(opt);
             });
         });
-    };
+    });
+}
 </script>
 
 </body>
