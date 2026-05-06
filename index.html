@@ -201,13 +201,29 @@ function initDropdowns() {
 
     // 第二層：商品 -> 效期
     sItem.addEventListener('change', function() {
-        const cat = sCat.value;
-        const item = this.value;
-        const expiries = (productMasterData[cat] && productMasterData[cat][item]) ? productMasterData[cat][item] : [];
-        sExp.innerHTML = '<option value="">-- 請選擇效期 --</option>';
-        expiries.forEach(exp => sExp.add(new Option(exp, exp)));
-    });
-}
+    const cat = sCat.value;
+    const item = this.value;
+
+    // 增加一個 console.log 來檢查目前抓到的資料
+    console.log("當前選擇類別:", cat, "選擇商品:", item);
+    console.log("可用資料庫內容:", productMasterData);
+
+    // 更加嚴謹的檢查：確保 cat 和 item 都有值且存在於資料中
+    let expiries = [];
+    if (cat && item && productMasterData[cat] && productMasterData[cat][item]) {
+        expiries = productMasterData[cat][item];
+    }
+    
+    sExp.innerHTML = '<option value="">-- 請選擇效期 --</option>';
+    
+    if (expiries.length > 0) {
+        expiries.forEach(exp => {
+            sExp.add(new Option(exp, exp));
+        });
+    } else {
+        sExp.innerHTML = '<option value="">-- 無可用效期庫存 --</option>';
+    }
+});
 </script>
 
 </body>
