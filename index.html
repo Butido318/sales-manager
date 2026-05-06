@@ -203,7 +203,7 @@ function initDropdowns() {
     sItem.addEventListener('change', function() {
         const cat = sCat.value;
         const item = this.value;
-        const expiries = productMasterData[cat][item] || [];
+        const expiries = (productMasterData[cat] && productMasterData[cat][item]) ? productMasterData[cat][item] : [];
         sExp.innerHTML = '<option value="">-- 請選擇效期 --</option>';
         expiries.forEach(exp => sExp.add(new Option(exp, exp)));
     });
