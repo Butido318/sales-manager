@@ -61,9 +61,10 @@
     <div style="font-size: 20px; margin-bottom: 10px;">✨ 銷售管理系統</div>
     <!-- 重新整理網頁會清空所有顯示的表單，回到首頁底圖狀態 -->
     <a onclick="location.reload()">🛖 回首頁</a>
-    <a onclick="showTab('purchase')">📦 進貨單</a>
+    <a onclick="showTab('purchase')">🛒 進貨單</a>
     <a onclick="showTab('sales')">💰 銷貨單</a>
-    <a onclick="showTab('inventory')">📊 庫存表</a>
+    <a onclick="showTab('inventory')">📦 庫存表</a>
+    <a onclick="showTab('analysis')">📊分析表</a>
 </nav>
 
 <div class="container">
@@ -102,7 +103,7 @@
             <select name="itemName" required><option value="">-- 請先選擇類別 --</option></select>
             
             <!-- 銷貨專用：根據目前庫存自動帶入可用效期 -->
-            <label>選擇出貨效期 (先進先出)</label>
+            <label>選擇出貨效期</label>
             <select name="expiry" required><option value="">-- 請先選擇商品 --</option></select>
             
             <label>數量</label><input type="number" name="quantity" required>
@@ -115,7 +116,7 @@
     <div id="inventory" class="tab-content">
         <h2>📊 庫存狀況</h2>
         <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; text-align: center;">
-            <p>即時庫存已串接 Google 試算表公式自動計算</p>
+            <p>即時庫存已更新至後台</p>
             <!-- 點擊後開啟你的 Google 試算表連結 -->
             <button onclick="window.open('https://docs.google.com/spreadsheets/d/1ClDYOc1iyGYW9XbwQp4Z5XZYB3ecSC7_ab3O3WtLhI4/edit#gid=1250971671', '_blank')" style="background: #2980b9; width: auto; display: inline-block;">
                 開啟試算表查看完整清單
@@ -201,14 +202,30 @@
         });
 
         // 銷貨單連動：商品 > 效期 (三層連動核心)
-        sItem.addEventListener('change', function() {
-            const cat = sCat.value;
-            const item = this.value;
-            // 透過物件路徑 [類別][商品] 抓取效期陣列
-            const expiries = (productMasterData[cat] && productMasterData[cat][item]) ? productMasterData[cat][item] : [];
-            sExp.innerHTML = '<option value="">-- 請選擇效期 --</option>';
-            expiries.forEach(exp => sExp.add(new Option(exp, exp)));
+sItem.addEventListener('change', function() {
+    const cat = sCat.value;
+    const item = this.value;
+
+    // 增加一個 console.log 來檢查目前抓到的資料
+    console.log("當前選擇類別:", cat, "選擇商品:", item);
+    console.log("可用資料庫內容:", productMasterData);
+
+    // 更加嚴謹的檢查：確保 cat 和 item 都有值且存在於資料中
+    let expiries = [];
+    if (cat && item && productMasterData[cat] && productMasterData[cat][item]) {
+        expiries = productMasterData[cat][item];
+    }
+    
+    sExp.innerHTML = '<option value="">-- 請選擇效期 --</option>';
+    
+    if (expiries.length > 0) {
+        expiries.forEach(exp => {
+            sExp.add(new Option(exp, exp));
         });
+    } else {
+        sExp.innerHTML = '<option value="">-- 無可用效期庫存 --</option>';
+    }
+});
     }
 </script>
 
