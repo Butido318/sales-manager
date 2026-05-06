@@ -82,22 +82,26 @@
 
     <!-- 銷貨單頁面 -->
     <div id="sales" class="tab-content">
-        <h2>💰 銷貨單填寫</h2>
-        <form id="salesForm">
-            <label>資料日期</label><input type="date" name="date" required>
-            <label>類別</label>
-            <select name="category">
-                <option value="保養品">保養品</option>
-                <option value="保健食品">保健食品</option>
-            </select>
-            <select name="itemName" id="itemSelect" required>
-    <option value="">-- 請選擇商品 --</option>
-</select>
-            <input type="number" name="quantity" placeholder="數量" required>
-            <input type="number" name="price" placeholder="單價" required>
-            <button type="submit">確認銷售與扣除庫存</button>
-        </form>
-    </div>
+    <h2>💰 銷貨單填寫</h2>
+    <form id="salesForm">
+        <label>日期</label><input type="date" name="date" required>
+        <label>類別</label>
+        <select name="category" required>
+            <option value="">-- 請選擇類別 --</option>
+            <option value="保養品">保養品</option>
+            <option value="保健食品">保健食品</option>
+        </select>
+        <label>商品名稱</label>
+        <select name="itemName" required><option value="">-- 請先選擇類別 --</option></select>
+        
+        <label>選擇出貨效期</label>
+        <select name="expiry" required><option value="">-- 請先選擇商品 --</option></select>
+        
+        <label>數量</label><input type="number" name="quantity" required>
+        <label>單價</label><input type="number" name="price" required>
+        <button type="submit">確認銷售並扣除庫存</button>
+    </form>
+</div>
 
     <!-- 庫存與分析標籤先預留位置 -->
     <div id="inventory" class="tab-content">
@@ -163,29 +167,31 @@ window.onload = function() {
     });
 };
 
-function setupDependentDropdowns() {
-    // 找出所有的類別選單 (進貨與銷貨各有一個)
-    const categorySelects = document.querySelectorAll('select[name="category"]');
-    
-    categorySelects.forEach(catSelect => {
-        // 找到同一組表單中的商品選單
-        const itemSelect = catSelect.closest('form').querySelector('select[name="itemName"]');
-        
-        // 當類別選單改變時執行
-        catSelect.addEventListener('change', function() {
-            const selectedCategory = this.value;
-            const items = productMasterData[selectedCategory] || [];
-            
-            // 清空舊選項，只保留預設值
-            itemSelect.innerHTML = '<option value="">-- 請選擇商品 --</option>';
-            
-            // 填入對應類別的商品
-            items.forEach(item => {
-                let opt = document.createElement('option');
-                opt.value = item;
-                opt.innerHTML = item;
-                itemSelect.appendChild(opt);
-            });
+function setupTripleDropdowns() {
+    const salesForm = document.getElementById('salesForm');
+    const catSelect = salesForm.querySelector('select[name="category"]');
+    const itemSelect = salesForm.querySelector('select[name="itemName"]');
+    const expirySelect = salesForm.querySelector('select[name="expiry"]');
+
+    // 第一層變動：類別 -> 商品
+    catSelect.addEventListener('change', function() {
+        const cat = this.value;
+        const items = Object.keys(productMasterData[cat] || {});
+        itemSelect.innerHTML = '<option value="">-- 請選擇商品 --</option>';
+        expirySelect.innerHTML = '<option value="">-- 請先選擇商品 --</option>';
+        items.forEach(item => {
+            itemSelect.add(new Option(item, item));
+        });
+    });
+
+    // 第二層變動：商品 -> 效期
+    itemSelect.addEventListener('change', function() {
+        const cat = catSelect.value;
+        const item = this.value;
+        const expiries = productMasterData[cat][item] || [];
+        expirySelect.innerHTML = '<option value="">-- 請選擇效期 --</option>';
+        expiries.forEach(exp => {
+            expirySelect.add(new Option(exp, exp));
         });
     });
 }
