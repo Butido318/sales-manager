@@ -66,7 +66,7 @@
     <a onclick="showTab('inventory')">📦庫存表</a>
     <a onclick="showTab('add-item')">🆕新增品項</a>
     <a onclick="showTab('analysis')">📊分析表</a>
-    <a onclick="location.reload()">🛖 回首頁</a>
+    <a onclick="location.reload()">🛖首頁</a>
 </nav>
 
 <div class="container">
@@ -130,6 +130,10 @@
         <label>新商品名稱</label>
         <input type="text" name="itemName" placeholder="請輸入完整商品名稱" required>
         <button type="submit" style="background: #e67e22;">確認新增</button>
+
+        <button onclick="window.open('https://docs.google.com/spreadsheets/d/1ClDYOc1iyGYW9XbwQp4Z5XZYB3ecSC7_ab3O3WtLhI4/edit#gid=1250971671', '_blank')" style="background: #2980b9; width: auto; display: inline-block;">
+                查看商品清單
+        </button>
     </form>
 </div>
 
@@ -140,7 +144,7 @@
             <p>即時庫存已更新至後台</p>
             <!-- 點擊後開啟你的 Google 試算表連結 -->
             <button onclick="window.open('https://docs.google.com/spreadsheets/d/1ClDYOc1iyGYW9XbwQp4Z5XZYB3ecSC7_ab3O3WtLhI4/edit#gid=1250971671', '_blank')" style="background: #2980b9; width: auto; display: inline-block;">
-                開啟表單查看清單
+                開啟表單
             </button>
         </div>
     </div>
