@@ -61,27 +61,29 @@
 
 <div class="container">
     <!-- 進貨單頁面 -->
-    <div id="purchase" class="tab-content">
-        <h2>📦 進貨單填寫</h2>
-        <form id="purchaseForm">
-            <label>資料日期</label><input type="date" name="date" required>
-            <label>類別</label>
-            <select name="category">
-                <option value="保養品">保養品</option>
-                <option value="保健食品">保健食品</option>
-            </select>
-            <select name="itemName" id="itemSelect" required>
-    <option value="">-- 請選擇商品 --</option>
-</select>
-            <input type="number" name="quantity" placeholder="數量" required>
-            <input type="number" name="price" placeholder="單價" required>
-            <label>商品效期</label><input type="date" name="expiry" required>
-            <button type="submit">確認送出</button>
-        </form>
-    </div>
+<div id="purchase" class="tab-content">
+    <h2>📦 進貨單填寫</h2>
+    <form id="purchaseForm">
+        <label>資料日期</label><input type="date" name="date" required>
+        <label>類別</label>
+        <select name="category" required>
+            <option value="">-- 請選擇類別 --</option>
+            <option value="保養品">保養品</option>
+            <option value="保健食品">保健食品</option>
+        </select>
+        <label>商品名稱</label>
+        <select name="itemName" required>
+            <option value="">-- 請先選擇類別 --</option>
+        </select>
+        <label>數量</label><input type="number" name="quantity" required>
+        <label>單價</label><input type="number" name="price" required>
+        <label>商品效期</label><input type="date" name="expiry" required>
+        <button type="submit">確認送出</button>
+    </form>
+</div>
 
-    <!-- 銷貨單頁面 -->
-    <div id="sales" class="tab-content">
+<!-- 銷貨單頁面 -->
+<div id="sales" class="tab-content">
     <h2>💰 銷貨單填寫</h2>
     <form id="salesForm">
         <label>日期</label><input type="date" name="date" required>
@@ -92,17 +94,18 @@
             <option value="保健食品">保健食品</option>
         </select>
         <label>商品名稱</label>
-        <select name="itemName" required><option value="">-- 請先選擇類別 --</option></select>
-        
+        <select name="itemName" required>
+            <option value="">-- 請先選擇類別 --</option>
+        </select>
         <label>選擇出貨效期</label>
-        <select name="expiry" required><option value="">-- 請先選擇商品 --</option></select>
-        
+        <select name="expiry" required>
+            <option value="">-- 請先選擇商品 --</option>
+        </select>
         <label>數量</label><input type="number" name="quantity" required>
         <label>單價</label><input type="number" name="price" required>
         <button type="submit">確認銷售並扣除庫存</button>
     </form>
 </div>
-
     <!-- 庫存與分析標籤先預留位置 -->
     <div id="inventory" class="tab-content">
     <h2>📊 庫存狀況</h2>
@@ -155,44 +158,54 @@
         .then(msg => alert(msg))
         .catch(err => alert("失敗：" + err));
     }
-  let productMasterData = {}; // 用來存放從 Excel 抓下來的全部分類資料
+  let productMasterData = {}; // 存放從 API 抓回來的資料
 
 window.onload = function() {
-    fetch(API_URL)
+    fetch(API_URL) // 確保 API_URL 已經定義
     .then(res => res.json())
     .then(data => {
-        productMasterData = data; // 存入變數
-        // 初始化：為網頁中所有的類別選單加入監聽功能
-        setupDependentDropdowns();
-    });
+        productMasterData = data;
+        initDropdowns(); // 初始化所有選單連動
+    })
+    .catch(err => console.error("資料載入失敗:", err));
 };
 
-function setupTripleDropdowns() {
-    const salesForm = document.getElementById('salesForm');
-    const catSelect = salesForm.querySelector('select[name="category"]');
-    const itemSelect = salesForm.querySelector('select[name="itemName"]');
-    const expirySelect = salesForm.querySelector('select[name="expiry"]');
+function initDropdowns() {
+    // --- 進貨單連動 (兩層) ---
+    const pForm = document.getElementById('purchaseForm');
+    const pCat = pForm.querySelector('select[name="category"]');
+    const pItem = pForm.querySelector('select[name="itemName"]');
 
-    // 第一層變動：類別 -> 商品
-    catSelect.addEventListener('change', function() {
+    pCat.addEventListener('change', function() {
         const cat = this.value;
+        // 進貨單通常顯示該類別的所有商品
         const items = Object.keys(productMasterData[cat] || {});
-        itemSelect.innerHTML = '<option value="">-- 請選擇商品 --</option>';
-        expirySelect.innerHTML = '<option value="">-- 請先選擇商品 --</option>';
-        items.forEach(item => {
-            itemSelect.add(new Option(item, item));
-        });
+        pItem.innerHTML = '<option value="">-- 請選擇商品 --</option>';
+        items.forEach(item => pItem.add(new Option(item, item)));
     });
 
-    // 第二層變動：商品 -> 效期
-    itemSelect.addEventListener('change', function() {
-        const cat = catSelect.value;
+    // --- 銷貨單連動 (三層) ---
+    const sForm = document.getElementById('salesForm');
+    const sCat = sForm.querySelector('select[name="category"]');
+    const sItem = sForm.querySelector('select[name="itemName"]');
+    const sExp = sForm.querySelector('select[name="expiry"]');
+
+    // 第一層：類別 -> 商品
+    sCat.addEventListener('change', function() {
+        const cat = this.value;
+        const items = Object.keys(productMasterData[cat] || {});
+        sItem.innerHTML = '<option value="">-- 請選擇商品 --</option>';
+        sExp.innerHTML = '<option value="">-- 請先選擇商品 --</option>';
+        items.forEach(item => sItem.add(new Option(item, item)));
+    });
+
+    // 第二層：商品 -> 效期
+    sItem.addEventListener('change', function() {
+        const cat = sCat.value;
         const item = this.value;
         const expiries = productMasterData[cat][item] || [];
-        expirySelect.innerHTML = '<option value="">-- 請選擇效期 --</option>';
-        expiries.forEach(exp => {
-            expirySelect.add(new Option(exp, exp));
-        });
+        sExp.innerHTML = '<option value="">-- 請選擇效期 --</option>';
+        expiries.forEach(exp => sExp.add(new Option(exp, exp)));
     });
 }
 </script>
