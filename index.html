@@ -61,11 +61,11 @@
     <div style="font-size: 20px; margin-bottom: 10px;">銷售管理系統</div>
     <!-- 重新整理網頁會清空所有顯示的表單，回到首頁底圖狀態 -->
     
-    <a onclick="showTab('purchase')">🛒 進貨單</a>
-    <a onclick="showTab('sales')">💰 銷貨單</a>
-    <a onclick="showTab('inventory')">📦 庫存表</a>
+    <a onclick="showTab('purchase')">🛒進貨單</a>
+    <a onclick="showTab('sales')">💰銷貨單</a>
+    <a onclick="showTab('inventory')">📦庫存表</a>
+    <a onclick="showTab('add-item')">🆕新增品項</a>
     <a onclick="showTab('analysis')">📊分析表</a>
-    <a onclick="showTab('newproduct')">新商品</a>
     <a onclick="location.reload()">🛖 回首頁</a>
 </nav>
 
@@ -116,6 +116,23 @@
         </form>
     </div>
 
+    <div id="add-item" class="tab-content">
+    <h2>🆕新增品項</h2>
+    <p style="color: #666; font-size: 14px;">此功能會將新商品永久加入「商品清單」中。</p>
+    <form id="addItemForm">
+        <label>類別</label>
+        <select name="category" required>
+            <option value="">-- 請選擇類別 --</option>
+            <option value="保養品">保養品</option>
+            <option value="保健食品">保健食品</option>
+            <option value="Others">Others</option>
+        </select>
+        <label>新商品名稱</label>
+        <input type="text" name="itemName" placeholder="請輸入完整商品名稱" required>
+        <button type="submit" style="background: #e67e22;">確認新增</button>
+    </form>
+</div>
+
     <!-- 【庫存狀況】連結區塊 -->
     <div id="inventory" class="tab-content">
         <h2>📊 庫存狀況</h2>
@@ -156,6 +173,15 @@
         e.preventDefault(); 
         sendData("銷貨單", Object.fromEntries(new FormData(e.target))); 
     };
+
+    // 新增品項表單的送出監聽
+document.getElementById('addItemForm').onsubmit = e => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target));
+    
+    // 呼叫原本就有的 sendData 函式，目標設為 "商品清單"
+    sendData("商品清單", data);
+};
 
     // 通用傳送資料函式 (Fetch POST)
     function sendData(target, data) {
