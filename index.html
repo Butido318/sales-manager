@@ -140,6 +140,14 @@
     <!-- 【庫存狀況】連結區塊 -->
     <div id="inventory" class="tab-content">
         <h2>📊 庫存狀況</h2>
+        
+        <div id="expiryWarning" style="background: #fff5f5; border-left: 5px solid #ff4d4d; padding: 15px; margin-bottom: 20px; border-radius: 8px;">
+        <h3 style="color: #d63031; margin-top: 0;">⚠️ 即期品預警 (前 10 名)</h3>
+        <ul id="warningList" style="list-style: none; padding: 0; margin: 0; font-size: 15px;">
+            <li style="color: #666;">載入中...</li>
+        </ul>
+    </div>
+        
         <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; text-align: center;">
             <p>即時庫存已更新至後台</p>
             <!-- 點擊後開啟你的 Google 試算表連結 -->
@@ -217,6 +225,7 @@ document.getElementById('addItemForm').onsubmit = e => {
         fetch(API_URL).then(res => res.json()).then(data => {
             productMasterData = data;
             initDropdowns(); // 初始化連動邏輯
+            updateWarningList(); // <-- 新增這一行 效期警示用
         }).catch(err => console.error("資料載入失敗:", err));
     };
 
@@ -273,6 +282,40 @@ sItem.addEventListener('change', function() {
     }
 });
     }
+
+    / 【庫存效期】計算短效期並顯示
+function updateWarningList() {
+    const warningList = document.getElementById('warningList');
+    let allExpiries = [];
+
+    // 1. 將巢狀資料展開成平整的陣列
+    for (let cat in productMasterData) {
+        for (let item in productMasterData[cat]) {
+            productMasterData[cat][item].forEach(exp => {
+                allExpiries.push({ name: item, date: exp });
+            });
+        }
+    }
+
+    // 2. 依照效期日期由近到遠排序 (A-Z)
+    allExpiries.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    // 3. 取得前 10 筆
+    const top10 = allExpiries.slice(0, 10);
+
+    // 4. 渲染到網頁上
+    if (top10.length === 0) {
+        warningList.innerHTML = '<li>✅ 目前無任何庫存資料</li>';
+        return;
+    }
+
+    warningList.innerHTML = top10.map(info => `
+        <li style="margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px dashed #fab1a0;">
+            <strong>${info.name}</strong> 
+            <span style="color: #d63031; float: right;">📅 ${info.date}</span>
+        </li>
+    `).join('');
+}
 </script>
 
 </body>
