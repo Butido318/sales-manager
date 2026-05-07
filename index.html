@@ -283,39 +283,7 @@ sItem.addEventListener('change', function() {
 });
     }
 
-    / 【庫存效期】計算短效期並顯示
-function updateWarningList() {
-    const warningList = document.getElementById('warningList');
-    let allExpiries = [];
 
-    // 1. 將巢狀資料展開成平整的陣列
-    for (let cat in productMasterData) {
-        for (let item in productMasterData[cat]) {
-            productMasterData[cat][item].forEach(exp => {
-                allExpiries.push({ name: item, date: exp });
-            });
-        }
-    }
-
-    // 2. 依照效期日期由近到遠排序 (A-Z)
-    allExpiries.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-    // 3. 取得前 10 筆
-    const top10 = allExpiries.slice(0, 10);
-
-    // 4. 渲染到網頁上
-    if (top10.length === 0) {
-        warningList.innerHTML = '<li>✅ 目前無任何庫存資料</li>';
-        return;
-    }
-
-    warningList.innerHTML = top10.map(info => `
-        <li style="margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px dashed #fab1a0;">
-            <strong>${info.name}</strong> 
-            <span style="color: #d63031; float: right;">📅 ${info.date}</span>
-        </li>
-    `).join('');
-}
 </script>
 
 </body>
