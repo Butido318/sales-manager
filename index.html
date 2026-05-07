@@ -279,44 +279,58 @@ sItem.addEventListener('change', function() {
         });
     } else {
         sExp.innerHTML = '<option value="">-- 無可用效期庫存 --</option>';
+         });
+      });
     }
-// 【功能】計算短效期並顯示
-function updateWarningList() {
-    const warningList = document.getElementById('warningList');
-    let allExpiries = [];
-
-    // 1. 將巢狀資料展開成平整的陣列
-    for (let cat in productMasterData) {
-        for (let item in productMasterData[cat]) {
-            productMasterData[cat][item].forEach(exp => {
-                allExpiries.push({ name: item, date: exp });
-            });
-        }
-    }
-
-    // 2. 依照效期日期由近到遠排序 (A-Z)
-    allExpiries.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-    // 3. 取得前 10 筆
-    const top10 = allExpiries.slice(0, 10);
-
-    // 4. 渲染到網頁上
-    if (top10.length === 0) {
-        warningList.innerHTML = '<li>✅ 目前無任何庫存資料</li>';
-        return;
-    }
-
-    warningList.innerHTML = top10.map(info => `
-        <li style="margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px dashed #fab1a0;">
-            <strong>${info.name}</strong> 
-            <span style="color: #d63031; float: right;">📅 ${info.date}</span>
-        </li>
-    `).join('');
-}
     
-});
-    }
+// 【庫存】計算短效期並顯示
+function updateWarningList() {
+        const warningList = document.getElementById('warningList');
+        if (!warningList) return;
 
+        let allExpiries = [];
+
+        // 1. 展開所有資料
+        for (let cat in productMasterData) {
+            for (let item in productMasterData[cat]) {
+                productMasterData[cat][item].forEach(expString => {
+                    // 解析字串，假設格式為 "YYYY-MM-DD(餘XX)"
+                    const dateMatch = expString.match(/\d{4}-\d{2}-\d{2}/);
+                    const stockMatch = expString.match(/\(餘(\d+)\)/);
+                    
+                    if (dateMatch) {
+                        allExpiries.push({
+                            name: item,
+                            date: dateMatch[0],
+                            stock: stockMatch ? stockMatch[1] : '?',
+                            fullLabel: expString
+                        });
+                    }
+                });
+            }
+        }
+
+        // 2. 排序 (日期由近到遠)
+        allExpiries.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        // 3. 渲染前 10 筆
+        const top10 = allExpiries.slice(0, 10);
+
+        if (top10.length === 0) {
+            warningList.innerHTML = '<li>✅ 目前無庫存資料</li>';
+            return;
+        }
+
+        warningList.innerHTML = top10.map(info => `
+            <li style="margin-bottom: 10px; padding: 8px; border-bottom: 1px dashed #fab1a0; list-style: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <strong style="flex: 1;">${info.name}</strong>
+                    <span style="color: #2c3e50; font-weight: bold; margin: 0 10px;">📦 剩 ${info.stock}</span>
+                    <span style="color: #d63031; font-family: monospace;">📅 ${info.date}</span>
+                </div>
+            </li>
+        `).join('');
+    }
 
 </script>
 
