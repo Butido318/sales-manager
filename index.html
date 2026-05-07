@@ -281,33 +281,7 @@ sItem.addEventListener('change', function() {
         sExp.innerHTML = '<option value="">-- 無可用效期庫存 --</option>';
           } 
         });
-                       
- // --- 邏輯 D：更新效期警示清單 ---
-    function updateWarningList() {
-        const warningList = document.getElementById('warningList');
-        let allExpiries = [];
-
-        // 從資料結構中提取所有效期資訊
-        for (let cat in productMasterData) {
-            for (let item in productMasterData[cat]) {
-                productMasterData[cat][item].forEach(exp => {
-                    allExpiries.push({ item, exp });
-                });
-            }
-        }
-
-        // 依效期排序（由近到遠）
-        allExpiries.sort((a, b) => new Date(a.exp) - new Date(b.exp));
-
-        // 渲染前 10 名
-        if (allExpiries.length === 0) {
-            warningList.innerHTML = '<li>目前無庫存資料</li>';
-        } else {
-            warningList.innerHTML = allExpiries.slice(0, 10).map(i => 
-                `<li style="margin-bottom: 5px;">📅 <strong>${i.exp}</strong> - ${i.item}</li>`
-            ).join('');
-        }
-    }
+ 
 </script>
 
 </body>
