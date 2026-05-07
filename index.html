@@ -280,8 +280,28 @@ sItem.addEventListener('change', function() {
     } else {
         sExp.innerHTML = '<option value="">-- 無可用效期庫存 --</option>';
          }
-          } );
+     } );
+ }
+    /* --- 邏輯 D：效期警示清單 --- */
+    function updateWarningList() {
+        const warningList = document.getElementById('warningList');
+        let allExpiries = [];
+        for (let cat in productMasterData) {
+            for (let item in productMasterData[cat]) {
+                if(Array.isArray(productMasterData[cat][item])) {
+                    productMasterData[cat][item].forEach(exp => allExpiries.push({ item, exp }));
+                }
+            }
         }
+        allExpiries.sort((a, b) => new Date(a.exp) - new Date(b.exp));
+        if (allExpiries.length === 0) {
+            warningList.innerHTML = '<li style="color: #666;">目前無庫存資料</li>';
+        } else {
+            warningList.innerHTML = allExpiries.slice(0, 10).map(i => 
+                `<li style="margin-bottom: 5px;">📅 <strong>${i.exp}</strong> - ${i.item}</li>`
+            ).join('');
+        }
+    }
  
 </script>
 
