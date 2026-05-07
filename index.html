@@ -74,7 +74,7 @@
     <div id="purchase" class="tab-content">
         <h2>📦 進貨單填寫</h2>
         <form id="purchaseForm">
-            <label>資料日期</label><input type="date" name="date" required>
+            <label>資料日期</label><input type="date" id="pDate" name="date" required>
             <label>類別</label>
             <select name="category" required>
                 <option value="">-- 請選擇類別 --</option>
@@ -95,7 +95,7 @@
     <div id="sales" class="tab-content">
         <h2>💰 銷貨單填寫</h2>
         <form id="salesForm">
-            <label>日期</label><input type="date" name="date" required>
+            <label>日期</label><input type="date" id="sDate" name="date" required>
             <label>類別</label>
             <select name="category" required>
                 <option value="">-- 請選擇類別 --</option>
@@ -202,6 +202,18 @@ document.getElementById('addItemForm').onsubmit = e => {
 
     // 網頁開啟時立刻抓取最新資料
     window.onload = function() {
+    // --- 新增：設定預設日期為當天 ---
+    const today = new Date();
+    // 格式化日期為 YYYY-MM-DD (修正時區偏差)
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0'); // 月份從0開始，所以+1
+    const dd = String(today.getDate()).padStart(2, '0');
+    const todayStr = `${yyyy}-${mm}-${dd}`;
+
+    // 將日期賦值給進貨單與銷貨單的日期欄位
+    if(document.getElementById('pDate')) document.getElementById('pDate').value = todayStr;
+    if(document.getElementById('sDate')) document.getElementById('sDate').value = todayStr;
+        
         fetch(API_URL).then(res => res.json()).then(data => {
             productMasterData = data;
             initDropdowns(); // 初始化連動邏輯
