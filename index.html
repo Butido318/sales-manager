@@ -316,13 +316,13 @@ sItem.addEventListener('change', function() {
                 productMasterData[cat][item].forEach(expString => {
                     // 解析字串，假設格式為 "YYYY-MM-DD(餘XX)"
                     const dateMatch = expString.match(/\d{4}-\d{2}-\d{2}/);
-                    const stockMatch = expString.match(/\(餘(\d+)\)/);
+                    const stockMatch = expString.match(/\((\d+)\)/);
                     
                     if (dateMatch) {
                         allExpiries.push({
                             name: item,
                             date: dateMatch[0],
-                            stock: stockMatch ? stockMatch[1] : '?',
+                            stock: stockMatch ? stockMatch[2] : '?',
                             fullLabel: expString
                         });
                     }
