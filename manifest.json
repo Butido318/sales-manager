@@ -1,6 +1,6 @@
 {
   "name": "Simon庫存管控表",
-  "short_name": "庫存管控",
+  "short_name": "S銷售管理",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#ffffff",
