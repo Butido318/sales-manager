@@ -1,6 +1,6 @@
 {
-  "name": "我的網頁名稱",
-  "short_name": "網頁名稱",
+  "name": "Simon庫存管控表",
+  "short_name": "庫存管控",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#ffffff",
